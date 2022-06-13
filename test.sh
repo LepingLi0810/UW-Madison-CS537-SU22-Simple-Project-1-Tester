@@ -31,13 +31,20 @@ done
 rm -rf my-look
 echo "---------------------------------"
 echo "[Check]"
+expected_out=1
 for f in expected_output/*.txt
 do
   [[ -e "$f" ]] || break
   filename=$(basename "$f")
   filenameWithoutExt="${filename%.*}"
   echo "Checking $filenameWithoutExt"
-  diff "$f" test_output/"$filename"
+  out1=$(diff "$f" test_output/"$filename")
+  out=$(echo "$out1" | wc -l)
+  if [ "$out" = "$expected_out" ]; then
+    echo "$filenameWithoutExt passed"
+  else
+    echo "$out1"
+  fi
 done
 echo "---------------------------------"
 echo "Finished"
